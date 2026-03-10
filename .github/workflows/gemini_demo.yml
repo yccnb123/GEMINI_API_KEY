@@ -1,0 +1,26 @@
+name: Run Gemini Demo
+
+on:
+  push:
+    branches: [ main ]   # 当推送代码到 main 分支时触发
+  workflow_dispatch:      # 允许手动触发（点击按钮运行）
+
+jobs:
+  call-gemini:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install google-generativeai
+
+      - name: Run Gemini script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python gemini_demo.py
