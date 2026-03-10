@@ -2,8 +2,8 @@ name: Run Gemini Demo
 
 on:
   push:
-    branches: [ main ]   # 当推送代码到 main 分支时触发
-  workflow_dispatch:      # 允许手动触发（点击按钮运行）
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   call-gemini:
@@ -18,7 +18,20 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install google-generativeai
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-generativeai
+
+      - name: Debug secret (check if GEMINI_API_KEY is set)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "❌ GEMINI_API_KEY is NOT set"
+            exit 1
+          else
+            echo "✅ GEMINI_API_KEY is set (length: ${#GEMINI_API_KEY})"
+          fi
 
       - name: Run Gemini script
         env:
