@@ -1,10 +1,13 @@
 import google.generativeai as genai
 import os
 
-# 从环境变量读取 API 密钥（GitHub Actions 会通过 secrets 注入）
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+api_key = os.environ.get("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY environment variable not set")
 
-# 使用 Gemini 模型
-model = genai.GenerativeModel('gemini-1.5-flash')
+genai.configure(api_key=api_key)
+
+# 使用稳定的 gemini-pro 模型
+model = genai.GenerativeModel('gemini-pro')
 response = model.generate_content("请用中文介绍 GitHub 的用途。")
 print(response.text)
